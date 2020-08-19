@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}设备详情页面{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'adminlet/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css' %}">
+{% endblock %}
+
+{% block breadcrumb %}
+    <section class="content-header">
+      <h1>
+        设备详情
+        <small>machine detail</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="/index/"><i class="fa fa-dashboard"></i> 首页</a></li>
+        <li class="active">设备详情</li>
+      </ol>
+    </section>
+{% endblock %}
+
+{% block content %}
+    <section class="content">
+        <div class="box">
+
+          <div class="box-header with-border">
+          <h3 class="box-title"><strong>设备名称：{{ machdetail.name }}
+                    {% if machdetail.mach_status == 0 %}
+                      <td><label class="label label-success">{{ machdetail.get_mach_status_display }}</label></td>
+                    {% elif machdetail.mach_status == 1 %}
+                      <td><label class="label label-info">{{ machdetail.get_mach_status_display }}</label></td>
+                    {% elif machdetail.mach_status == 2 %}
+                      <td><label class="label label-warning">{{ machdetail.get_mach_status_display }}</label></td>
+                    {% endif %}
+          </strong></h3>
+          <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+              <i class="fa fa-minus"></i></button>
+            <button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="Remove">
+              <i class="fa fa-times"></i></button>
+          </div>
+        </div>
+
+            <div class="box-body" >
+                    <img width="40%" height="40%" src="/upload/{{ machdetail.image }}" alt="">
+                <div class="col-md-6">
+                        <br><strong>设备名称：</strong>{{ machdetail.name }}</br>
+                        <br><strong>型号：</strong>{{ machdetail.sn }}</br>
+                        <br><strong>设备编号：</strong>{{ machdetail.mach_num }}</br>
+                        <br><strong>备注：</strong>{{ machdetail.remark }}</br>
+                        <br><strong>领用人：</strong>{{ machdetail.user }}</br>
+                        <br><strong>借出日期：</strong>{{ machdetail.outtime }}</br>
+                        <br><strong>更新日期：</strong>{{ machdetail.update_time }}</br>
+                        <br><strong>录入人：</strong>{{ machdetail.djuser }}</br>
+                    </div>
+                </div>
+
+
+        </div>
+    </section>
+
+{% endblock %}
+{% block script %}
+
+<script src="{% static 'adminlet/bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'adminlet/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+
+
+{% endblock %}

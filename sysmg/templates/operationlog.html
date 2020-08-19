@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}设备列表页面{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'adminlet/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css' %}">
+{% endblock %}
+
+{% block breadcrumb %}
+    <section class="content-header">
+      <h1>
+        操作日志
+        <small>operation log</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="/index/"><i class="fa fa-dashboard"></i> 首页</a></li>
+        <li class="active">操作日志</li>
+      </ol>
+    </section>
+{% endblock %}
+
+{% block content %}
+    <section class="content">
+      <div class="row">
+        <div class="col-xs-12">
+
+        <div class="box">
+
+        <div class="box-body" >
+          <table id="mach_table" class="table table-bordered table-striped">
+
+            <thead>
+            <tr>
+                <th>序号</th>
+                <th>操作人</th>
+                <th>操作类型</th>
+                <th>操作详情</th>
+                <th>操作时间</th>
+            </tr>
+            </thead>
+            <tbody>
+                {% for operationlog in operationlog %}
+                <tr>
+                  <td>{{ forloop.counter }}</td>
+                    {% if operationlog.user == None %}
+                      <td></td>
+                    {% elif operationlog.user != None %}
+                      <td>{{ operationlog.user }}</td>
+                    {% endif %}
+
+                     {% if operationlog.operationtype == 1 %}
+                      <td>{{ operationlog.get_operationtype_display }}</td>
+                    {% elif operationlog.operationtype == 2 %}
+                      <td>{{ operationlog.get_operationtype_display }}</td>
+                    {% elif operationlog.operationtype == 3 %}
+                      <td>{{ operationlog.get_operationtype_display }}</td>
+                    {% elif operationlog.operationtype == 4 %}
+                      <td>{{ operationlog.get_operationtype_display }}</td>
+                    {% elif operationlog.operationtype == 5 %}
+                      <td>{{ operationlog.get_operationtype_display }}</td>
+                    {% elif operationlog.operationtype == 6 %}
+                      <td>{{ operationlog.get_operationtype_display }}</td>
+                    {% elif operationlog.operationtype == 7 %}
+                      <td>{{ operationlog.get_operationtype_display }}</td>
+                    {% elif operationlog.operationtype == 8 %}
+                      <td>{{ operationlog.get_operationtype_display }}</td>
+                    {% elif operationlog.operationtype == 9 %}
+                      <td>{{ operationlog.get_operationtype_display }}</td>
+                    {% endif %}
+                    <td>{{ operationlog.descrip }}</td>
+                    <td>{{ operationlog.createtime }}</td>
+
+                {% endfor %}
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+        </div>
+      </div>
+    </section>
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'adminlet/bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'adminlet/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+<script>
+$(function () {
+        $('#mach_table').DataTable({
+
+            "lengthMenu":[ 10, 25, 50, 100,200 ],
+
+            language: {
+                        "sInfo": "当前显示第 _START_ 到第 _END_ 条，共 _TOTAL_ 条",
+                        "sInfoFiltered": "(从_MAX_条筛选 )",
+                        "sInfoEmpty": "共筛选到0条",
+                        "sSearch": "搜索:",
+                        "sLengthMenu": "每页显示 _MENU_ 条",
+                        "sZeroRecords": "未筛选到相关内容",
+                        "paginate": {
+                            "sFirst": "首页",  //首页和尾页必须在pagingType设为full_numbers时才可以
+                            "sLast": "尾页",
+                            "sPrevious": "上一页",
+                            "sNext": "下一页",
+                            "first": "First page",
+                            "last": "Last page",
+                            "next": "Next page",
+                            "previous": "Previous page"
+                        }
+            },
+
+
+          "paging": true,       <!-- 允许分页 -->
+          "lengthChange": false, <!-- 允许改变每页显示的行数 -->
+          "searching": true,    <!-- 允许内容搜索 -->
+          "ordering": true,     <!-- 允许排序 -->
+          "info": true,         <!-- 显示信息 -->
+          "autoWidth": false    <!-- 固定宽度 -->
+        });
+      });
+
+</script>
+{% endblock %}

@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}用户列表页面{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'adminlet/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css' %}">
+{% endblock %}
+
+{% block breadcrumb %}
+    <section class="content-header">
+      <h1>
+        用户列表
+        <small>user list</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="/index/"><i class="fa fa-dashboard"></i> 首页</a></li>
+        <li class="active">用户列表</li>
+      </ol>
+    </section>
+{% endblock %}
+
+{% block content %}
+    <section class="content">
+      <div class="row">
+        <div class="col-xs-12">
+
+        <div class="box">
+
+        <div class="box-body" >
+            <button class="pull-right btn btn-default btn-flat"><a href="/useradd/">新增</a></button>
+          <table id="mach_table" class="table table-bordered table-striped">
+
+            <thead>
+            <tr>
+                <th>序号</th>
+                <th>用户名</th>
+                <th>性别</th>
+                <th>email</th>
+                <th>创建日期</th>
+                <th>是否管理员</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+                {% for userlist in userlist %}
+                <tr>
+                  <td>{{ forloop.counter }}</td>
+
+                    <td>{{ userlist.name }}</td>
+
+                    {% if userlist.sex == "male" %}
+                      <td>{{ userlist.get_sex_display }}</td>
+                    {% elif userlist.sex == "female" %}
+                      <td>{{ userlist.get_sex_display }}</td>
+                    {% endif %}
+
+                    <td>{{ userlist.email }}</td>
+
+                    <td>{{ userlist.c_time }}</td>
+                    {% if userlist.admintype == "1" %}
+                      <td>是</td>
+                    {% elif userlist.admintype == "0" %}
+                      <td>否</td>
+                    {% endif %}
+
+
+
+                    <td>
+                        <button><a href="{% url 'useredit' userlist.id %}">编辑</a></button>
+                        <button data-toggle="modal" data-target="#modal-default" {% if userlist.admintype == '1' or userlist.name == request.session.user_name %}style="display:none;"{% endif %}>删除</button>
+                        <div class="modal fade" id="modal-default" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+                         <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                           <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                            <h4 class="modal-title" id="exampleModalLabel">确认框</h4>
+                           </div>
+                           <div class="modal-body">
+                            <form>
+                            <div class="form-group">
+                              <label for="message-text" class="control-label">确定要删除用户吗？</label>
+                             </div>
+                            </form>
+                           </div>
+                           <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                               <button type="button" class="btn btn-default"><a href="/userdel/{{userlist.id}}">确认</a></button>
+                           </div>
+                          </div>
+                         </div>
+                        </div>
+
+                    </td>
+                </tr>
+                {% endfor %}
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+        </div>
+      </div>
+    </section>
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'adminlet/bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'adminlet/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+<script>
+$(function () {
+        $('#mach_table').DataTable({
+
+            "lengthMenu":[ 10, 25, 50, 100,200 ],
+
+            language: {
+                        "sInfo": "当前显示第 _START_ 到第 _END_ 条，共 _TOTAL_ 条",
+                        "sInfoFiltered": "(从_MAX_条筛选 )",
+                        "sInfoEmpty": "共筛选到0条",
+                        "sSearch": "搜索:",
+                        "sLengthMenu": "每页显示 _MENU_ 条",
+                        "sZeroRecords": "未筛选到相关内容",
+                        "paginate": {
+                            "sFirst": "首页",  //首页和尾页必须在pagingType设为full_numbers时才可以
+                            "sLast": "尾页",
+                            "sPrevious": "上一页",
+                            "sNext": "下一页",
+                            "first": "First page",
+                            "last": "Last page",
+                            "next": "Next page",
+                            "previous": "Previous page"
+                        }
+            },
+
+
+          "paging": true,       <!-- 允许分页 -->
+          "lengthChange": false, <!-- 允许改变每页显示的行数 -->
+          "searching": true,    <!-- 允许内容搜索 -->
+          "ordering": true,     <!-- 允许排序 -->
+          "info": true,         <!-- 显示信息 -->
+          "autoWidth": false    <!-- 固定宽度 -->
+        });
+      });
+
+</script>
+{% endblock %}

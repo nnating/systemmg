@@ -1,0 +1,222 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}设备列表页面{% endblock %}
+
+{% block css %}
+<link rel="stylesheet"
+      href="{% static 'adminlet/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css' %}"
+      xmlns="http://www.w3.org/1999/html">
+{% endblock %}
+
+{% block breadcrumb %}
+    <section class="content-header">
+      <h1>
+        设备列表
+        <small>machine list</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="/index/"><i class="fa fa-dashboard"></i> 首页</a></li>
+        <li class="active">设备列表</li>
+      </ol>
+    </section>
+{% endblock %}
+
+{% block content %}
+    <section class="content">
+      <div class="row">
+        <div class="col-xs-12">
+
+        <div class="box">
+
+        <div class="box-body" >
+            <button class="pull-right btn btn-default btn-flat"><a href="/machadd/">新增</a></button>
+
+            <button class="pull-right btn btn-default btn-flat" data-toggle="modal" data-target="#modal-excel">导入</button>
+                        <div class="modal fade" id="modal-excel">
+                         <div class="modal-dialog">
+                          <div class="modal-content">
+                           <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                            <h4 class="modal-title">导入</h4>
+                           </div>
+                           <div class="modal-body">
+                             <form action="/excelin/" method="POST" role="form" id="machin_form" enctype="multipart/form-data" onsubmit="return toVaild()">
+                             {% csrf_token %}
+                                 {% if message1 %}
+                                    <div class="alert alert-warning">{{ message1 }}</div>
+                                 {% endif %}
+                            <div class="form-group">
+                                <label for="message-text" class="control-label">导出模板：</label><a href="/media/mach.xlsx" download="导入设备.xls">点击下载</a>
+                                <input type="file" name="filename" id="filename">
+                             </div>
+
+
+                           <div class="modal-footer">
+                                   <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                                   <button type="submit" class="btn btn-default" id="machin_submit" value="machin">导入</button>
+                            </div>
+                               </form>
+
+                           </div>
+                          </div>
+                         </div>
+                        </div>
+
+
+
+          <table id="mach_table" class="table table-bordered table-striped">
+
+            <thead>
+            <tr>
+                <th>序号</th>
+                <th>设备名称</th>
+                <th>型号</th>
+                <th>设备编号</th>
+                <th>备注</th>
+                <th>领用人</th>
+                <th>借出日期</th>
+                <th>录入人</th>
+                <th>设备状态</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+                {% for machlist in machlist %}
+                <tr>
+                  <td>{{ forloop.counter }}</td>
+<!--                  {% if asset.asset_type == 'server' %}-->
+<!--                      <td class="text-green text-bold">{{ asset.get_id_display }}</td>-->
+                      <td>{{ machlist.id }}</td>
+<!--                  {% elif asset.asset_type == "networkdevice" %}-->
+<!--                      <td class="text-yellow text-bold">{{ asset.get_asset_type_display }}</td>-->
+<!--                      <td>{{ asset.networkdevice.get_sub_asset_type_display }}</td>-->
+<!--                  {% elif asset.asset_type == "storagedevice" %}-->
+<!--                      <td class="text-blue text-bold">{{ asset.get_asset_type_display }}</td>-->
+<!--                      <td>{{ asset.storagedevice.get_sub_asset_type_display }}</td>-->
+<!--                  {% elif asset.asset_type == "securitydevice" %}-->
+<!--                      <td class="text-red text-bold">{{ asset.get_asset_type_display }}</td>-->
+<!--                      <td>{{ asset.securitydevice.get_sub_asset_type_display }}</td>-->
+<!--                  {% endif %}-->
+<!--                    {% if asset.asset_type == 'server' %}-->
+<!--                        <td><a href="{% url 'assets:detail' asset.id %}">{{ asset.name }}</a></td>-->
+<!--                    {% else %}-->
+<!--                        <td>{{ asset.name }}</td>-->
+<!--                    {% endif %}-->
+
+                    <td><a href="{% url 'machdetail' machlist.id %}">{{ machlist.name }}</a></td>
+                    <td>{{ machlist.sn }}</td>
+                    <td>{{ machlist.mach_num }}</td>
+                    <td>{{ machlist.remark }}</td>
+                    <td>{{ machlist.user }}</td>
+                    {% if machlist.outtime == None %}
+                      <td></td>
+                    {% elif machlist.outtime != None %}
+                      <td>{{ machlist.outtime }}</td>
+                    {% endif %}
+
+                    <td>{{ machlist.djuser }}</td>
+                    {% if machlist.mach_status == 0 %}
+                      <td><label class="label label-success">{{ machlist.get_mach_status_display }}</label></td>
+                    {% elif machlist.mach_status == 1 %}
+                      <td><label class="label label-info">{{ machlist.get_mach_status_display }}</label></td>
+                    {% elif machlist.mach_status == 2 %}
+                      <td><label class="label label-warning">{{ machlist.get_mach_status_display }}</label></td>
+                    {% endif %}
+                    <td><button><a href="{% url 'machedit' machlist.id %}">编辑</a></button>
+                        <button data-toggle="modal" data-target="#modal-default">删除</button>
+                        <div class="modal fade" id="modal-default" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+                         <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                           <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                            <h4 class="modal-title" id="exampleModalLabel">确认框</h4>
+                           </div>
+                           <div class="modal-body">
+                            <form>
+                            <div class="form-group">
+                              <label for="message-text" class="control-label">确定要删除设备吗？</label>
+                             </div>
+                            </form>
+                           </div>
+                           <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                               <button type="button" class="btn btn-default"><a href="/machdel/{{machlist.id}}">确认</a></button>
+                           </div>
+                          </div>
+                         </div>
+                        </div>
+
+                    </td>
+                </tr>
+                {% endfor %}
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+        </div>
+      </div>
+    </section>
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'adminlet/bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'adminlet/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+<script>
+$(function () {
+        $('#mach_table').DataTable({
+
+            "lengthMenu":[ 10, 25, 50, 100,200 ],
+
+            language: {
+                        "sInfo": "当前显示第 _START_ 到第 _END_ 条，共 _TOTAL_ 条",
+                        "sInfoFiltered": "(从_MAX_条筛选 )",
+                        "sInfoEmpty": "共筛选到0条",
+                        "sSearch": "搜索:",
+                        "sLengthMenu": "每页显示 _MENU_ 条",
+                        "sZeroRecords": "未筛选到相关内容",
+                        "paginate": {
+                            "sFirst": "首页",  //首页和尾页必须在pagingType设为full_numbers时才可以
+                            "sLast": "尾页",
+                            "sPrevious": "上一页",
+                            "sNext": "下一页",
+                            "first": "First page",
+                            "last": "Last page",
+                            "next": "Next page",
+                            "previous": "Previous page"
+                        }
+            },
+
+
+          "paging": true,       <!-- 允许分页 -->
+          "lengthChange": false, <!-- 允许改变每页显示的行数 -->
+          "searching": true,    <!-- 允许内容搜索 -->
+          "ordering": true,     <!-- 允许排序 -->
+          "info": true,         <!-- 显示信息 -->
+          "autoWidth": false    <!-- 固定宽度 -->
+        });
+      });
+
+
+</script>
+
+ <script language="javascript">
+            function toVaild(){
+                var val = document.getElementById("filename").value;
+                var suffix=val.substr(val.lastIndexOf(".")).toLowerCase();
+                if(val.length == 0){
+                    alert("未选择文件");
+                    return false;
+                }
+                if(suffix != '.xlsx' && suffix != '.xls' ){
+                    alert("文件格式不正确");
+                    return false;
+                }
+<!--                else{-->
+<!--                    alert("校验失败，不进行提交");-->
+<!--                    return false;-->
+<!--                }-->
+            }
+    </script>
+
+{% endblock %}

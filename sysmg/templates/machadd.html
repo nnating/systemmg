@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}新增设备页面{% endblock %}
+
+{% block css %}
+<link rel="stylesheet"
+      href="{% static 'adminlet/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css' %}"
+      xmlns="http://www.w3.org/1999/html">
+<link rel="stylesheet"
+      href="{% static 'adminlet/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css' %}">
+{% endblock %}
+
+{% block breadcrumb %}
+    <section class="content-header">
+      <h1>
+        新增设备
+        <small>machine add</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="/index/"><i class="fa fa-dashboard"></i> 首页</a></li>
+        <li class="active">新增设备</li>
+      </ol>
+    </section>
+{% endblock %}
+
+{% block content %}
+    <section class="content">
+        <div class="box">
+            <div class="box-body" >
+                <form class="form-horizontal" action="/machadd/" method="POST" role="form" id="machadd_form" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {% if message %}
+                        <div class="alert alert-warning">{{ message }}</div>
+                    {% endif %}
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">设备状态：</label>
+                        <div class="col-sm-3">
+                        <select class="form-control"  id="mach_status" name="mach_status" required>
+                            <option value="0">未借出</option>
+                            <option value="1">已借出</option>
+                            <option value="2">未借出，故障</option>
+                        </select>
+                        </div>
+                    </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">设备名称：</label>
+                            <div class="col-sm-10">
+                            <input type="text" class="form-control" id="name" name="name" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">型号：</label>
+                            <div class="col-sm-10">
+                            <input type="text" class="form-control" id="sn" name="sn" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">设备编号：</label>
+                            <div class="col-sm-10">
+                            <input type="text" class="form-control" id="mach_num" name="mach_num">
+                            </div>
+                         </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">照片：</label>
+                            <div class="col-sm-10">
+                            <input type="file" name="img" class="form-control" id="img">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">备注：</label>
+                            <div class="col-sm-10">
+                            <input type="text" class="form-control" id="remark" name="remark">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">领用人：</label>
+                            <div class="col-sm-10">
+                            <input type="text"  class="form-control" id="user" name="user">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">借出日期：</label>
+                            <div class="col-sm-2">
+                            <input type="date" class="form-control" id="outtime" name="outtime">
+                            </div>
+                        </div>
+<!--                        <div class="form-group">-->
+<!--                            <label class="col-sm-2 control-label">更新日期：</label>-->
+<!--                            <div class="col-sm-10">-->
+<!--                            <input type="text" class="form-control" id="update_time" name="update_time">-->
+<!--                            </div>-->
+<!--                        </div>-->
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">录入人：</label>
+                            <div class="col-sm-3"><input type="text"  class="form-control" id="djuser_name" name="djuser_name" value={{ request.session.user_name }} readonly="readonly"></div>
+                        </div>
+                    <div class="box-footer">
+                        <button type="submit" id="machadd_submit" class="btn btn-info pull-right" value="machadd">保存</button>
+                        <button type="submit" class="btn btn-default pull-right"><a href="/machlist/">取消</a></button>
+                    </div>
+                </form>
+                </div>
+        </div>
+    </section>
+
+{% endblock %}
+{% block script %}
+
+<script src="{% static 'adminlet/bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'adminlet/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+<script src="{% static 'adminlet/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js' %}"></script>
+{% endblock %}
